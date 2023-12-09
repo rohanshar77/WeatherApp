@@ -3,6 +3,14 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
+const path = require("path");
+const { MongoClient, ServerApiVersion } = require('mongodb');
+require("dotenv").config({ path: path.resolve(__dirname, '.env') })
+const uri = process.env.MONGO_CONNECTION_STRING;
+
+// Uncomment after updating .env
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// await client.connect();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -37,7 +45,7 @@ app.get('/', (req, res) => {
 app.post('/weather', async (req, res) => {
     const location = req.body.location;
     const apiKey = 'jWxJbh6a3rRicgoHSDAejpqN1U7XTh07'; // Get an API key from OpenWeatherMap
-    const encodedLoc = "new%20york"
+    const encodedLoc = encodeURIComponent(req.body.location);
     // Read location and encode
 
     try {
