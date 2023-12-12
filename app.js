@@ -4,22 +4,25 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const path = require("path");
-const { MongoClient, ServerApiVersion } = require('mongodb');
+// const { MongoClient, ServerApiVersion } = require('mongodb');
 require("dotenv").config({ path: path.resolve(__dirname, '.env') })
 const uri = process.env.MONGO_CONNECTION_STRING;
 
-// Uncomment after updating .env
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-// await client.connect();
+try {
+
+  // Connect to MongoDB
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  console.log('Connected to WeatherApp!')
+
+} catch (e) {
+  console.log(e)
+}
 
 const app = express();
 const port = process.env.PORT || 3000;
-
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost/weatherapp', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
 // Set up middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -62,7 +65,7 @@ app.post('/weather', async (req, res) => {
         console.log(weatherData)
         await weatherData.save();
         let { location, temperature, humidity } = weatherData
-        res.render('weather', { location, humidity, description });
+        res.render('weather', { location, temperature, humidity });
     } catch (error) {
       console.error(error);
       res.send('Error fetching weather data.');
