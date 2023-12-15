@@ -36,6 +36,11 @@ const weatherDataSchema = new mongoose.Schema({
   humidity: String,
 });
 
+const locationSchema = new mongoose.Schema({
+  location: String
+})
+
+const Location = mongoose.model('favorites', locationSchema);
 const WeatherData = mongoose.model('WeatherData', weatherDataSchema);
 
 // Define a route for the root URL
@@ -71,9 +76,34 @@ app.post('/weather', async (req, res) => {
       res.send('Error fetching weather data.');
     }
   });
+
+app.get("/favorites", async (req, res) =>{
+  const cursor = Location.find().cursor();
+  const array = await cursor.toArray();
+  let location1, location2, location3; 
+
+  if (array.length == 0) {
+    location1 = "Save a location as a favorite";
+    location2 = "Save a location as a favorite";
+    location3 = "Save a location as a favorite";
+  } else {
+    // Idk lol add the locations if theres enough
+  }
+
+  res.render("favorites", { location1, location2, location3 })
+})
   
 
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+
+async function favorite(location) {
+  const fav = new Location({
+    location: location
+  });
+
+  await fav.save();
+}
