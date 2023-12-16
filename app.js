@@ -23,6 +23,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Set up middleware
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -77,20 +78,30 @@ app.post("/weather", async (req, res) => {
 });
 
 app.get("/favorites", async (req, res) => {
-  const cursor = Location.find().cursor();
-  const array = await cursor.toArray();
-  let location1, location2, location3;
+  const favorites = await Location.find().sort({ _id: -1 }).limit(3);
 
-  if (array.length == 0) {
-    location1 = "Save a location as a favorite";
-    location2 = "Save a location as a favorite";
-    location3 = "Save a location as a favorite";
-  } else {
-    // Idk lol add the locations if theres enough
+  // Log for debugging
+  console.log(`Retrieved favorites: ${favorites.map(f => f.location).join(', ')}`);
+
+  // Initialize default messages
+  let location1 = "Save a location as a favorite";
+  let location2 = "Save a location as a favorite";
+  let location3 = "Save a location as a favorite";
+
+  // Update locations based on the number of favorites found
+  if (favorites.length > 0) {
+    location1 = favorites[0].location;
+    if (favorites.length > 1) {
+      location2 = favorites[1].location;
+      if (favorites.length > 2) {
+        location3 = favorites[2].location;
+      }
+    }
   }
 
   res.render("favorites", { location1, location2, location3 });
 });
+
 
 // Start the server
 app.listen(port, () => {
@@ -98,15 +109,32 @@ app.listen(port, () => {
 });
 
 async function favorite(location) {
-  const fav = new Location({
-    location: location,
-  });
+  // Check the count of favorite locations
+  const count = await Location.countDocuments();
+  if (count >= 3) {
+    // Find the oldest entry and remove it
+    const oldest = await Location.findOne().sort({ _id: 1 });
+    if (oldest) {
+      await Location.deleteOne({ _id: oldest._id });
+    }
+  }
 
+  // Add new favorite location
+  const fav = new Location({ location: location });
   await fav.save();
+  
+  // Log for debugging
+  console.log(`Saved favorite: ${location}`);
 }
 
 app.post("/favorite", async (req, res) => {
+  console.log(req.body); // Log the entire body to check the received data
   const location = req.body.location;
+  if (!location) {
+    return res.status(400).send("No location provided.");
+  }
   await favorite(location);
   res.send("Location saved as favorite.");
 });
+
+

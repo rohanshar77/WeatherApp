@@ -138,6 +138,10 @@
         color: #fff;
         border-bottom-color: #fff;
       }
+
+      .carousel-item {
+        min-height: 500px;
+      }
     </style>
 
     <link href="/views/cover.css" rel="stylesheet" />
@@ -318,10 +322,7 @@
                 <div class="carousel-caption text-start">
                   <!-- Favorite One -->
                   <h1><%= location1 %></h1>
-                  <p class="opacity-75">
-                    Some representative placeholder content for the first slide
-                    of the carousel.
-                  </p>
+                  <p class="opacity-75">Most recent favorite location.</p>
                   <p><a class="btn btn-lg btn-primary" href="/">Home</a></p>
                 </div>
               </div>
@@ -346,10 +347,7 @@
                 <div class="carousel-caption">
                   <!-- Favorite Two -->
                   <h1><%= location2 %></h1>
-                  <p>
-                    Some representative placeholder content for the second slide
-                    of the carousel.
-                  </p>
+                  <p>Second favorite location.</p>
                   <p><a class="btn btn-lg btn-primary" href="/">Home</a></p>
                 </div>
               </div>
@@ -374,7 +372,7 @@
                 <div class="carousel-caption text-end">
                   <!-- Favorite Three -->
                   <h1><%= location3 %></h1>
-                  <p></p>
+                  <p>Third favorite location</p>
                   <p><a class="btn btn-lg btn-primary" href="/">Home</a></p>
                 </div>
               </div>
