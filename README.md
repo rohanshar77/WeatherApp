@@ -5,4 +5,5 @@ This is a simple web application where you can search the weather of any city of
 
 Api Used: https://api.tomorrow.io/v4/weather/forecast
 
-Youtube Link: 
+Youtube Link: https://youtu.be/4vXdvsTGdDc
+Project URL: https://weather-app-gqtm.onrender.com/
